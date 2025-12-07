@@ -1,11 +1,21 @@
 import { pool } from "../../config/db";
 import { TUser } from "./user.interface";
-// Create (Already existed)
+import bcrypt from 'bcryptjs';
+// Create User
 const createUserIntoDB = async (userData: TUser) => {
     const { name, email, password, phone, role } = userData;
+
+    // 1. Guard clause: Ensure password exists
+    if (!password) {
+        throw new Error("Password is required for user creation");
+    }
+
+    // Now TypeScript knows 'password' is definitely a string
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const result = await pool.query(
         `INSERT INTO users(name, email, password, phone, role) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-        [name, email.toLowerCase(), password, phone, role]
+        [name, email.toLowerCase(), hashedPassword, phone, role]
     );
     return result.rows[0];
 };

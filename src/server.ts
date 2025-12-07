@@ -5,6 +5,8 @@ import logger from "./middleware/logger";
 import { userRoutes } from "./modules/users/user.routes";
 import { vehicleRoutes } from "./modules/vehicles/vehicle.route";
 import { bookingRoutes } from "./modules/bookings/booking.routes";
+import { authRoutes } from "./modules/auth/auth.routers";
+
 const app = express();
 const port = config.port;
 // parser
@@ -26,22 +28,17 @@ app.get("/", logger, (req: Request, res: Response) => {
 // ==========================
 // 1. USERS CRUD
 // ==========================
-
 app.use("/users", userRoutes);
-
-
-
 // ==========================
 // 2. VEHICLES CRUD
 // ==========================
-
 app.use("/vehicles", vehicleRoutes);
-
 // ==========================
 // 3. BOOKINGS CRUD
 // ==========================
-
 app.use("/bookings", bookingRoutes);
+//auth routes
+app.use('/api/v1/auth', authRoutes);
 
 // 404 Handler
 app.use((req, res) => {
